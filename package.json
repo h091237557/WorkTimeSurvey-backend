@@ -22,7 +22,7 @@
     "co": "^4.6.0",
     "cors": "^2.7.1",
     "debug": "^2.2.0",
-    "express": "^5.0.0-alpha.2",
+    "express": "^5.0.0-alpha.5",
     "express-mongo-db": "^2.0.3",
     "lodash": "^4.13.1",
     "mongodb": "^2.2.25",
