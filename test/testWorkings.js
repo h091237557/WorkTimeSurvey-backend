@@ -7,9 +7,6 @@ const MongoClient = require('mongodb').MongoClient;
 const sinon = require('sinon');
 require('sinon-as-promised');
 
-const authenticationLib = require('../libs/authentication');
-const authorizationLib = require('../libs/authorization');
-
 describe('Workings 工時資訊', function() {
     var db = undefined;
 
