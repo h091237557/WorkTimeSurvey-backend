@@ -287,7 +287,7 @@ describe('experiences 面試和工作經驗資訊', function() {
                     }).then((res) => {
                         const experience = res.body;
                         assert.lengthOf(experience.interview_qas, 3);
-                        assert.property(experience.interview_qas[0], "answer", "Because the input of answer is null");
+                        assert.property(experience.interview_qas[0], "answer");
                         assert.notProperty(experience.interview_qas[1], "answer", "Because the input of answer is null");
                         assert.notProperty(experience.interview_qas[2], "answer", "Because the input of answer is undefined");
                     });
