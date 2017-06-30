@@ -17,7 +17,10 @@ const {
     generateWorkExperienceData,
 } = require('../testData');
 
-describe('Experiences 面試和工作經驗資訊', () => {
+const create_company_keyword_collection = require('../../../database/migrations/create-companyKeywords-collection');
+const create_title_keyword_collection = require('../../../database/migrations/create-jobTitleKeywords-collection');
+
+describe('Experiences 面試和工作經驗資訊', function () {
     let db;
 
     before('DB: Setup', () => MongoClient.connect(config.get('MONGODB_URI')).then((_db) => {
@@ -178,8 +181,21 @@ describe('Experiences 面試和工作經驗資訊', () => {
         });
     });
 
-    describe('GET /experiences', () => {
-        before('Seeding some experiences', () => {
+    describe('GET /experiences', function () {
+        before('Key word before', function () {
+            return db.collections()
+                .then((result) => {
+                    const target_collections = result.map(collection => collection.collectionName);
+                    if (target_collections.indexOf("search_by_company_keywords") === -1) {
+                        return create_company_keyword_collection(db);
+                    }
+                    if (target_collections.indexOf("earch_by_job_title_keywords") === -1) {
+                        return create_title_keyword_collection(db);
+                    }
+                });
+        });
+
+        before('Seeding some experiences', function () {
             const inter_data_1 = Object.assign(generateInterviewExperienceData(), {
                 company: {
                     name: "GOODJOB1",
@@ -485,6 +501,15 @@ describe('Experiences 面試和工作經驗資訊', () => {
                     assert.propertyVal(res.body.experiences[3], 'like_count', 0);
                 }));
 
-        after(() => db.collection('experiences').deleteMany({}));
+        after(function () {
+            return db.collection('experiences').deleteMany({});
+        });
+
+        after(function () {
+            return Promise.all([
+                db.collection('search_by_company_keywords').drop(),
+                db.collection('search_by_job_title_keywords').drop(),
+            ]);
+        });
     });
 });
