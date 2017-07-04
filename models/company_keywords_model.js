@@ -1,12 +1,12 @@
 
-class CompanyKeyWordsModel {
+class CompanyKeywordModel {
 
     constructor(db) {
-        this.collection = db.collection('search_by_company_keywords');
+        this.collection = db.collection('company_keywords');
     }
     createKeyword(word) {
-        return this.collection.insert({word});
+        return this.collection.insertOne({word});
     }
 }
 
-module.exports = CompanyKeyWordsModel;
+module.exports = CompanyKeywordModel;

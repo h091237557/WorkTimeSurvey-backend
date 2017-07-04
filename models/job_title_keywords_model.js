@@ -1,12 +1,12 @@
 
-class JobTitleKeyWordsModel {
+class JobTitleKeyWordModel {
 
     constructor(db) {
-        this.collection = db.collection('search_by_job_title_keywords');
+        this.collection = db.collection('job_title_keywords');
     }
     createKeyword(word) {
-        return this.collection.insert({word});
+        return this.collection.insertOne({word});
     }
 }
 
-module.exports = JobTitleKeyWordsModel;
+module.exports = JobTitleKeyWordModel;

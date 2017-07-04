@@ -111,7 +111,7 @@ function _saveKeyWord(query, type, db) {
     }
 
     const keyword_model = new (_keyWordFactory(type))(db);
-    keyword_model.createKeyword(query);
+    return keyword_model.createKeyword(query);
 }
 
 /* eslint-disable */

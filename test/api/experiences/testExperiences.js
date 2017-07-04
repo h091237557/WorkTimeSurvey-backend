@@ -507,9 +507,14 @@ describe('Experiences 面試和工作經驗資訊', function () {
 
         after(function () {
             return Promise.all([
-                db.collection('search_by_company_keywords').drop(),
-                db.collection('search_by_job_title_keywords').drop(),
-            ]);
+                db.collection('company_keywords').drop(),
+                db.collection('job_title_keywords').drop(),
+            ]).then(() => {
+                return Promise.all([
+                    create_title_keyword_collection(db),
+                    create_company_keyword_collection(db),
+                ]);
+            });
         });
     });
 });

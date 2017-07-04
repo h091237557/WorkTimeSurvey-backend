@@ -14,23 +14,13 @@ describe('Company Keywords Test', function() {
     before(function() {
         return MongoClient.connect(config.get('MONGODB_URI')).then(function(_db) {
             db = _db;
-            return db.collections();
-        }).then((result) => {
-            const target_collection = result.find((collection) => {
-                if (collection.collectionName == "search_by_company_keywords'") {
-                    return collection;
-                }
-            });
-            if (!target_collection) {
-                return create_capped_collection(db);
-            }
         });
     });
 
 
-    describe('Get : /company_keywords', function() {
+    describe('Collection company_keywords', function() {
         it('should return true, if the collection is capped', function() {
-            return db.collection('search_by_company_keywords').isCapped()
+            return db.collection('company_keywords').isCapped()
                 .then((result) => {
                     assert.isTrue(result);
                 });
@@ -39,26 +29,27 @@ describe('Company Keywords Test', function() {
 
     describe('Get : /experiences (key word check)', function() {
         it('should return 200', function() {
-            const query = new ObjectId();
+            const query = (new ObjectId()).toString();
             return request(app).get('/experiences')
                 .query({
                     search_query: query.toString(),
-                    search_by: "company",
+                    search_by: 'company',
                 })
                 .expect(200)
                 .then(() => {
-                    return db.collection('search_by_company_keywords')
-                        .find({
-                            word: query.toString(),
-                        }).toArray();
+                    return db.collection('company_keywords')
+                        .findOne({
+                            word: query,
+                        });
                 })
                 .then((result) => {
-                    assert.equal(result[0].word, query.toString());
+                    assert.equal(result.word, query.toString());
                 });
         });
     });
 
     after(function() {
-        return db.collection('search_by_company_keywords').drop();
+        return db.collection('company_keywords').drop()
+            .then(() => create_capped_collection(db));
     });
 });

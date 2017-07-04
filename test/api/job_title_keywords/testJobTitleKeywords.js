@@ -14,24 +14,13 @@ describe('Job title Keywords Test', function() {
     before(function() {
         return MongoClient.connect(config.get('MONGODB_URI')).then(function(_db) {
             db = _db;
-            return db.collections();
-        }).then((result) => {
-            const target_collection = result.find((collection) => {
-                if (collection.collectionName == "search_by_job_title_keywords") {
-                    return collection;
-                }
-            });
-            if (!target_collection) {
-                return create_capped_collection(db);
-            }
         });
     });
 
 
-    describe('Get : /job_title_keywords', function() {
-
+    describe('Collecction job_title_keywords', function() {
         it('should return true, if the collection is capped', function() {
-            return db.collection('search_by_job_title_keywords').isCapped()
+            return db.collection('job_title_keywords').isCapped()
                     .then((result) => {
                         assert.isTrue(result);
                     });
@@ -40,26 +29,27 @@ describe('Job title Keywords Test', function() {
 
     describe('Get : /experiences (key word check)', function() {
         it('should return 200', function() {
-            const query = new ObjectId();
+            const query = (new ObjectId()).toString();
             return request(app).get('/experiences')
                 .query({
-                    search_query: query.toString(),
-                    search_by: "job_title",
+                    search_query: query,
+                    search_by: 'job_title',
                 })
                 .expect(200)
                 .then(() => {
-                    return db.collection('search_by_job_title_keywords')
-                        .find({
+                    return db.collection('job_title_keywords')
+                        .findOne({
                             word: query.toString(),
-                        }).toArray();
+                        });
                 })
                 .then((result) => {
-                    assert.equal(result[0].word, query.toString());
+                    assert.equal(result.word, query.toString());
                 });
         });
     });
 
     after(function() {
-        return db.collection('search_by_job_title_keywords').drop();
+        return db.collection('job_title_keywords').drop()
+            .then(() => create_capped_collection(db));
     });
 });
