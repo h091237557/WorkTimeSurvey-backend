@@ -5,7 +5,7 @@ class CompanyKeywordModel {
         this.collection = db.collection('company_keywords');
     }
     createKeyword(word) {
-        return this.collection.insertOne({word});
+        return this.collection.insertOne({ word });
     }
 }
 

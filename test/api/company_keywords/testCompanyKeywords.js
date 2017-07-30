@@ -8,18 +8,18 @@ const app = require('../../../app');
 const config = require('config');
 const create_capped_collection = require('../../../database/migrations/create-companyKeywords-collection');
 
-describe('Company Keywords Test', function() {
+describe('Company Keywords Test', function () {
     let db = null;
 
-    before(function() {
-        return MongoClient.connect(config.get('MONGODB_URI')).then(function(_db) {
+    before(function () {
+        return MongoClient.connect(config.get('MONGODB_URI')).then(function (_db) {
             db = _db;
         });
     });
 
 
-    describe('Collection company_keywords', function() {
-        it('should return true, if the collection is capped', function() {
+    describe('Collection company_keywords', function () {
+        it('should return true, if the collection is capped', function () {
             return db.collection('company_keywords').isCapped()
                 .then((result) => {
                     assert.isTrue(result);
@@ -27,8 +27,8 @@ describe('Company Keywords Test', function() {
         });
     });
 
-    describe('Get : /experiences (key word check)', function() {
-        it('should return 200', function() {
+    describe('Get : /experiences (key word check)', function () {
+        it('should return 200', function () {
             const query = (new ObjectId()).toString();
             return request(app).get('/experiences')
                 .query({
@@ -36,19 +36,17 @@ describe('Company Keywords Test', function() {
                     search_by: 'company',
                 })
                 .expect(200)
-                .then(() => {
-                    return db.collection('company_keywords')
+                .then(() => db.collection('company_keywords')
                         .findOne({
                             word: query,
-                        });
-                })
+                        }))
                 .then((result) => {
                     assert.equal(result.word, query.toString());
                 });
         });
     });
 
-    after(function() {
+    after(function () {
         return db.collection('company_keywords').drop()
             .then(() => create_capped_collection(db));
     });
