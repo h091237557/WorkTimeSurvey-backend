@@ -509,12 +509,10 @@ describe('Experiences 面試和工作經驗資訊', function () {
             return Promise.all([
                 db.collection('company_keywords').drop(),
                 db.collection('job_title_keywords').drop(),
-            ]).then(() => {
-                return Promise.all([
-                    create_title_keyword_collection(db),
-                    create_company_keyword_collection(db),
-                ]);
-            });
+            ]).then(() => Promise.all([
+                create_title_keyword_collection(db),
+                create_company_keyword_collection(db),
+            ]));
         });
     });
 });
