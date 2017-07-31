@@ -24,23 +24,23 @@ function _generateGetCompanyViewModel(companies) {
  * @apiParam {Number} [page=0]
  * @apiSuccess {Object[]} . Companies
  */
-router.get('/search', function (req, res, next) {
+router.get('/search', (req, res, next) => {
     winston.info("/workings/search", { query: req.query, ip: req.ip, ips: req.ips });
 
     const search = req.query.key || "";
     const page = req.query.page || 0;
-    let query;
 
     if (search === "") {
-        throw new HttpError("key is required", 422);
-    } else {
-        query = {
-            $or: [
+        next(new HttpError("key is required", 422));
+        return;
+    }
+
+    const query = {
+        $or: [
                 { name: new RegExp(`^${lodash.escapeRegExp(search.toUpperCase())}`) },
                 { id: search },
-            ],
-        };
-    }
+        ],
+    };
 
     const sort_by = {
         capital: -1,
